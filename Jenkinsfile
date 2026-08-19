@@ -8,16 +8,28 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn -B clean package'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn -B clean package'
+                    } else {
+                        bat 'mvn -B clean package'
+                    }
+                }
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn -B test'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn -B test'
+                    } else {
+                        bat 'mvn -B test'
+                    }
+                }
             }
             post {
                 always {
-                    junit 'target/test-reports/*.xml'
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
